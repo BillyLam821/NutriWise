@@ -1,0 +1,14 @@
+<resources>
+    <string name="app_name">NutriWise</string>
+    <string name="title_home">Home</string>
+    <string name="title_dashboard">Dashboard</string>
+    <string name="title_notifications">Notifications</string>
+
+    <string name="tab">\u0009\u0009</string>
+
+    <string-array name="unitArray">
+        <item>g</item>
+        <item>mL</item>
+        <item>cup</item>
+    </string-array>
+</resources>
