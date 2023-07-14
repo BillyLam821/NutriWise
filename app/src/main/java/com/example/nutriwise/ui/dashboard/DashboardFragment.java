@@ -15,6 +15,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.nutriwise.MainActivity;
 import com.example.nutriwise.R;
 import com.example.nutriwise.databinding.FragmentDashboardBinding;
+import com.example.nutriwise.ui.home.HomeFragment;
 
 import java.util.List;
 import java.util.TreeMap;
@@ -39,7 +40,8 @@ public class DashboardFragment extends Fragment {
         dashboardViewModel.getText().observe(getViewLifecycleOwner(), textView::setText);
 
         MainActivity mainActivity = (MainActivity) getActivity();
-        logData = mainActivity.getLogData();
+//        logData = mainActivity.getLogData();
+        logData = HomeFragment.getLogData();
 //        TextView testView = root.findViewById(R.id.testView);
 //        testView.setText(mainActivity.getLogData().get(0));
 
