@@ -11,6 +11,7 @@ public class NutritionDataResponse {
 
     @SerializedName("totalNutrients")
     private NutritionData nutritionData;
+    private String ingredient;
 
     public NutritionDataResponse(double calories, double totalWeight, NutritionData nutritionData) {
         this.calories = calories;

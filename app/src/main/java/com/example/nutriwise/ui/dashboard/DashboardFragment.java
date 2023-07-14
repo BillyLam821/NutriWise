@@ -15,8 +15,11 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.nutriwise.MainActivity;
 import com.example.nutriwise.R;
 import com.example.nutriwise.databinding.FragmentDashboardBinding;
+import com.example.nutriwise.model.Database;
+import com.example.nutriwise.model.LogEntry;
 import com.example.nutriwise.ui.home.HomeFragment;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.TreeMap;
 
@@ -27,6 +30,8 @@ public class DashboardFragment extends Fragment {
     private RecyclerView recyclerView;
     private RecyclerAdapter adapter;
     TreeMap<String, List<String[]>> logData;
+    List<LogEntry> logEntries = new ArrayList<>();
+    Database database;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -41,7 +46,8 @@ public class DashboardFragment extends Fragment {
 
         MainActivity mainActivity = (MainActivity) getActivity();
 //        logData = mainActivity.getLogData();
-        logData = HomeFragment.getLogData();
+        database = mainActivity.getDatabase();
+        logEntries = database.getAllLog();
 //        TextView testView = root.findViewById(R.id.testView);
 //        testView.setText(mainActivity.getLogData().get(0));
 
@@ -49,7 +55,7 @@ public class DashboardFragment extends Fragment {
 
         // Set up RecyclerView
         recyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
-        RecyclerAdapter adapter = new RecyclerAdapter(logData);
+        RecyclerAdapter adapter = new RecyclerAdapter(logEntries);
         recyclerView.setAdapter(adapter);
 
         return root;

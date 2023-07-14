@@ -3,6 +3,9 @@ package com.example.nutriwise.ui.home;
 import static android.content.ContentValues.TAG;
 
 import android.app.DatePickerDialog;
+import android.content.ContentValues;
+import android.content.Context;
+import android.database.sqlite.SQLiteDatabase;
 import android.icu.util.Calendar;
 import android.os.Bundle;
 import android.util.Log;
@@ -23,6 +26,8 @@ import com.example.nutriwise.MainActivity;
 import com.example.nutriwise.R;
 import com.example.nutriwise.api.EdamamApiService;
 import com.example.nutriwise.databinding.FragmentHomeBinding;
+import com.example.nutriwise.model.Database;
+import com.example.nutriwise.model.LogEntry;
 import com.example.nutriwise.model.NutritionData;
 import com.example.nutriwise.model.NutritionDataResponse;
 
@@ -58,6 +63,8 @@ public class HomeFragment extends Fragment {
     private int day;
     static Comparator<String> descendingComparator = Comparator.reverseOrder();
     private static TreeMap<String, List<String[]>> logData = new TreeMap<>(descendingComparator); // to-be-implemented
+    private Database database;
+    LogEntry logEntry;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -69,6 +76,13 @@ public class HomeFragment extends Fragment {
 
         final TextView textView = binding.textHome;
         homeViewModel.getText().observe(getViewLifecycleOwner(), textView::setText);
+
+        MainActivity mainActivity = (MainActivity) getActivity();
+        if (mainActivity != null) {
+            database = mainActivity.getDatabase();
+        }
+        System.out.println("*********");
+        System.out.println(database);
 
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(BASE_URL)
@@ -93,9 +107,9 @@ public class HomeFragment extends Fragment {
                 } else if (searchFood.isEmpty()) {
                     nutritionTextView.setText("Food name is missing");
                 } else {
-                    ingredient = searchQty + searchUnit + " " + searchFood;
+//                    ingredient = searchQty + searchUnit + " " + searchFood;
                     nutritionTextView.setText("Searching for data...");
-                    fetchNutritionData(ingredient);
+                    fetchNutritionData(searchQty, searchUnit, searchFood);
                 }
             }
         }); // end of onClickListener for food search
@@ -147,23 +161,28 @@ public class HomeFragment extends Fragment {
         logBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (dt.isEmpty()) {
+//                if (dt.isEmpty()) {
+                if (logEntry.equals(null)) {
                     nutritionTextView.setText("Please search for food");
                 } else if (year <= 0) {
                     nutritionTextView.setText("Please select date");
                 } else {
-                    String dateString = Integer.toString(year) + "-" + Integer.toString(month + 1) + "-" + Integer.toString(day);
-                    addLogData(dateString, ingredient, dt);
-                    dt = null;
-                    ingredient = null;
-                    year = 0;
-                    month = 0;
-                    day = 0;
+//                    String dateString = Integer.toString(year) + "-" + Integer.toString(month + 1) + "-" + Integer.toString(day);
+//                    addLogData(dateString, ingredient, dt);
+//                    dt = null;
+//                    ingredient = null;
+//                    year = 0;
+//                    month = 0;
+//                    day = 0;
+                    if (database != null) {
+                        database.insertFoodEntry(logEntry);
+                    }
+                    else {
+                        System.out.println("DB is null");
+                    }
                 }
             }
         }); // end of onClickListener for Logging
-
-
 
         return root;
     }
@@ -174,19 +193,19 @@ public class HomeFragment extends Fragment {
         binding = null;
     }
 
-    public void addLogData(String date, String food, String nutrition) {
-        if (!logData.containsKey(date)) {
-            logData.put(date, new ArrayList<>());
-        }
-        logData.get(date).add(new String[] {food, nutrition});
-    }
-    public static TreeMap<String, List<String[]>> getLogData() {
-        return logData;
-    }
+//    public void addLogData(String date, String food, String nutrition) {
+//        if (!logData.containsKey(date)) {
+//            logData.put(date, new ArrayList<>());
+//        }
+//        logData.get(date).add(new String[] {food, nutrition});
+//    }
+//    public static TreeMap<String, List<String[]>> getLogData() {
+//        return logData;
+//    }
 
 
-    private void fetchNutritionData(String ingredient) {
-
+    private void fetchNutritionData(String searchQty, String searchUnit, String searchFood) {
+        ingredient = searchQty + searchUnit + " " + searchFood;
         Call<NutritionDataResponse> call = apiService.getNutritionData(appId, appKey, ingredient);
 
         call.enqueue(new Callback<NutritionDataResponse>() {
@@ -201,6 +220,9 @@ public class HomeFragment extends Fragment {
                     double fat = nutritionData.getFat().getQuantity();
                     double protein = nutritionData.getProtein().getQuantity();
                     double carbs = nutritionData.getCarbs().getQuantity();
+
+                    // Insert data into db
+                    logEntry = new LogEntry(searchFood, Integer.parseInt(searchQty), searchUnit, calories, carbs, protein, fat, year, month, day);
 
                     String displayText = String.format(
                             "%-14s%.1f%n%-14s%.1f%n%-14s%.1f%n%-14s%.1f",
@@ -231,4 +253,14 @@ public class HomeFragment extends Fragment {
             }
         });
     } // end of fetchNutritionData
+
+//    @Override
+//    public void onAttach(@NonNull Context context) {
+//        super.onAttach(context);
+//        MainActivity mainActivity = (MainActivity) context;
+//        database = mainActivity.getDatabase();
+//        System.out.println("*******");
+//        System.out.println("ATTACH");
+//        System.out.println(database);
+//    }
 }

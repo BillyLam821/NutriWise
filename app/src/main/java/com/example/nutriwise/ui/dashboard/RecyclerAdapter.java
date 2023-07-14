@@ -9,6 +9,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.nutriwise.R;
+import com.example.nutriwise.model.LogEntry;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -17,12 +18,16 @@ import java.util.TreeMap;
 public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ViewHolder> {
 
 
-    private TreeMap<String, List<String[]>> logData;
-    private List<String> dates; // List to store the dates
+//    private TreeMap<String, List<String[]>> logData;
+//    private List<String> dates; // List to store the dates
+    private List<LogEntry> logData;
 
-    public RecyclerAdapter(TreeMap<String, List<String[]>> logData) {
+//    public RecyclerAdapter(TreeMap<String, List<String[]>> logData) {
+//        this.logData = logData;
+//        this.dates = new ArrayList<>(logData.keySet()); // Store the dates from the TreeMap
+//    }
+public RecyclerAdapter(List<LogEntry> logData) {
         this.logData = logData;
-        this.dates = new ArrayList<>(logData.keySet()); // Store the dates from the TreeMap
     }
 
     @NonNull
@@ -36,31 +41,19 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ViewHo
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        String date = (String) logData.keySet().toArray()[position];
-        List<String[]> foodList = logData.get(date);
+        LogEntry logEntry = logData.get(position);
 
-        // Bind data to the views in your log_card layout
-        holder.logDateTextView.setText(date);
+        // Bind data to the views in the log_card layout
+        holder.logDateTextView.setText(Integer.toString(logEntry.getYear()));
+        holder.logNameTextView.setText(logEntry.getIngredient());
+        holder.logDetailTextView.setText(Double.toString(logEntry.getCalories()));
 
-
-        StringBuilder logDetailBuilder = new StringBuilder();
-        for (String[] foodData : foodList) {
-            String foodName = foodData[0];
-            String nutritionData = foodData[1];
-            holder.logNameTextView.setText(foodName);
-            holder.logDetailTextView.setText(nutritionData);
-//            logDetailBuilder.append(foodName).append(": ").append(nutritionData).append("\n");
-        }
 //        holder.logDetailTextView.setText(logDetailBuilder.toString());
     }
 
     @Override
     public int getItemCount() {
-        int count = 0;
-        for (List<String[]> foodList : logData.values()) {
-            count += foodList.size();
-        }
-        return count;
+        return logData.size();
     }
 
     // Create a ViewHolder class to hold the views for each card item

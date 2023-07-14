@@ -14,6 +14,7 @@ import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.example.nutriwise.api.EdamamApiService;
+import com.example.nutriwise.model.Database;
 import com.example.nutriwise.model.NutritionData;
 import com.example.nutriwise.model.NutritionDataResponse;
 import com.example.nutriwise.ui.dashboard.DashboardFragment;
@@ -58,9 +59,10 @@ public class MainActivity extends AppCompatActivity {
 //    private int month;
 //    private int day;
     private String testVal = "testVal";
+    private Database database;
 //    private List<String> logData = new ArrayList<>();
-    Comparator<String> descendingComparator = Comparator.reverseOrder();
-    private TreeMap<String, List<String[]>> logData = new TreeMap<>(descendingComparator); // to-be-implemented
+//    Comparator<String> descendingComparator = Comparator.reverseOrder();
+//    private TreeMap<String, List<String[]>> logData = new TreeMap<>(descendingComparator); // to-be-implemented
 //    public void addLogData(String s) {
 //        getLogData().add(s);
 //    }
@@ -79,6 +81,10 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        database = new Database(this);
+        System.out.println("*********MAIN********");
+        System.out.println(database);
+
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
@@ -91,6 +97,7 @@ public class MainActivity extends AppCompatActivity {
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_activity_main);
         NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
         NavigationUI.setupWithNavController(binding.navView, navController);
+
 
 //        Retrofit retrofit = new Retrofit.Builder()
 //                .baseUrl(BASE_URL)
@@ -235,4 +242,7 @@ public class MainActivity extends AppCompatActivity {
 //        });
 //    } // end of fetchNutritionData
 
+    public Database getDatabase() {
+        return database;
+    }
 }
