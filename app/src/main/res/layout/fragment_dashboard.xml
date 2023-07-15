@@ -19,6 +19,17 @@
 <!--        app:layout_constraintStart_toStartOf="parent"-->
 <!--        app:layout_constraintTop_toTopOf="parent" />-->
 
+    <TextView
+        android:id="@+id/noRecordTxt"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="240dp"
+        android:gravity="center"
+        app:layout_constraintLeft_toLeftOf="@+id/dashboardFragmentContainer"
+        app:layout_constraintRight_toRightOf="@+id/dashboardFragmentContainer"
+        app:layout_constraintTop_toTopOf="@id/dashboardFragmentContainer"
+        tools:ignore="MissingConstraints" />
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerView"
         android:layout_width="match_parent"

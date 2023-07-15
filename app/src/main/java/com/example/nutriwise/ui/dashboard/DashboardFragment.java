@@ -35,6 +35,7 @@ public class DashboardFragment extends Fragment {
     TreeMap<String, List<String[]>> logData;
     List<LogEntry> logEntries = new ArrayList<>();
     Database database;
+    TextView noRecordTxt;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -51,6 +52,10 @@ public class DashboardFragment extends Fragment {
 //        logData = mainActivity.getLogData();
         database = mainActivity.getDatabase();
         logEntries = database.getAllLog();
+        if (logEntries.isEmpty()) {
+            noRecordTxt = root.findViewById(R.id.noRecordTxt);
+            noRecordTxt.setText("No Record Found");
+        }
 //        TextView testView = root.findViewById(R.id.testView);
 //        testView.setText(mainActivity.getLogData().get(0));
 
