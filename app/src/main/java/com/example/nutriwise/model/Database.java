@@ -111,6 +111,12 @@ public class Database extends SQLiteOpenHelper {
         return logs;
     }
 
+    public void deleteAllLogEntries() {
+        SQLiteDatabase db = getWritableDatabase();
+        db.delete(TABLE_NAME, null, null);
+        db.close();
+    }
+
     // to add other methods to query, update, or delete data from the database
 
 }

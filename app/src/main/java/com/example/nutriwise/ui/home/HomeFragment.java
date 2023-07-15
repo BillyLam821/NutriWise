@@ -131,7 +131,7 @@ public class HomeFragment extends Fragment {
                 // on below line we are getting
                 // our day, month and year.
                 year = c.get(Calendar.YEAR);
-                month = c.get(Calendar.MONTH);
+                month = c.get(Calendar.MONTH) + 1;
                 day = c.get(Calendar.DAY_OF_MONTH);
 
                 // on below line we are creating a variable for date picker dialog.
@@ -225,11 +225,11 @@ public class HomeFragment extends Fragment {
                     logEntry = new LogEntry(searchFood, Integer.parseInt(searchQty), searchUnit, calories, carbs, protein, fat, year, month, day);
 
                     String displayText = String.format(
-                            "%-14s%.1f%n%-14s%.1f%n%-14s%.1f%n%-14s%.1f",
-                            "Calories:", calories,
-                            "Carbs:", carbs,
-                            "Protein:", protein,
-                            "Fat:", fat);
+                            "%-13s%.1f kcal%n%-14s%.1f g%n%-13s%.1f g%n%-16s%.1f g",
+                            "Calories: ", calories,
+                            "Carbs:    ", carbs,
+                            "Protein:  ", protein,
+                            "Fat:      ", fat);
                     dt = displayText;
 
                     System.out.println(displayText);

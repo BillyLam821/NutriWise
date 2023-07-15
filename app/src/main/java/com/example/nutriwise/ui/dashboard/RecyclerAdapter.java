@@ -26,8 +26,8 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ViewHo
 //        this.logData = logData;
 //        this.dates = new ArrayList<>(logData.keySet()); // Store the dates from the TreeMap
 //    }
-public RecyclerAdapter(List<LogEntry> logData) {
-        this.logData = logData;
+    public RecyclerAdapter(List<LogEntry> logData) {
+            this.logData = logData;
     }
 
     @NonNull
@@ -44,9 +44,18 @@ public RecyclerAdapter(List<LogEntry> logData) {
         LogEntry logEntry = logData.get(position);
 
         // Bind data to the views in the log_card layout
-        holder.logDateTextView.setText(Integer.toString(logEntry.getYear()));
+        String displayDate = Integer.toString(logEntry.getYear()) + "-" + Integer.toString(logEntry.getMonth()) + "-" + Integer.toString(logEntry.getDay());
+        holder.logDateTextView.setText(displayDate);
         holder.logNameTextView.setText(logEntry.getIngredient());
-        holder.logDetailTextView.setText(Double.toString(logEntry.getCalories()));
+        String displayQty = Integer.toString(logEntry.getQuantity()) + logEntry.getUnit();
+        holder.logQtyTextView.setText(displayQty);
+        String displayDetails = String.format(
+                "%-13s%.1f kcal%n%-14s%.1f g%n%-13s%.1f g%n%-16s%.1f g",
+                "Calories:", logEntry.getCalories(),
+                "Carbs:", logEntry.getCarbs(),
+                "Proteins:", logEntry.getProteins(),
+                "Fats:", logEntry.getFats());
+        holder.logDetailTextView.setText(displayDetails);
 
 //        holder.logDetailTextView.setText(logDetailBuilder.toString());
     }
@@ -60,12 +69,14 @@ public RecyclerAdapter(List<LogEntry> logData) {
     static class ViewHolder extends RecyclerView.ViewHolder {
         TextView logDateTextView;
         TextView logNameTextView;
+        TextView logQtyTextView;
         TextView logDetailTextView;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             logDateTextView = itemView.findViewById(R.id.logDate);
             logNameTextView = itemView.findViewById(R.id.logName);
+            logQtyTextView = itemView.findViewById(R.id.logQty);
             logDetailTextView = itemView.findViewById(R.id.logDetail);
         }
     }
