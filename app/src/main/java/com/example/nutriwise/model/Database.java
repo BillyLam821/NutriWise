@@ -42,7 +42,7 @@ public class Database extends SQLiteOpenHelper {
                 COLUMN_FATS + " REAL, " +
                 COLUMN_YEAR + " INTEGER, " +
                 COLUMN_MONTH + " INTEGER, " +
-                COLUMN_DAY + " INTEGER" +
+                COLUMN_DAY + " INTEGER " +
                 ")";
         db.execSQL(createTableQuery);
     }
@@ -94,20 +94,14 @@ public class Database extends SQLiteOpenHelper {
                 @SuppressLint("Range") int month = cursor.getInt(cursor.getColumnIndex(COLUMN_MONTH));
                 @SuppressLint("Range") int day = cursor.getInt(cursor.getColumnIndex(COLUMN_DAY));
 
-                // Retrieve other column values as needed
-
-                // Create a new instance of YourModel and populate it with the retrieved values
                 LogEntry logEntry = new LogEntry(ingredient, quantity, unit, calories, carbs, proteins, fats, year, month, day);
-                // Add the model to the ArrayList
                 logs.add(logEntry);
             } while (cursor.moveToNext());
+
             cursor.close();
         }
 
-        // Close the database connection
         db.close();
-
-        // Return the ArrayList of results
         return logs;
     }
 
@@ -116,8 +110,6 @@ public class Database extends SQLiteOpenHelper {
         db.delete(TABLE_NAME, null, null);
         db.close();
     }
-
-    // to add other methods to query, update, or delete data from the database
 
 }
 

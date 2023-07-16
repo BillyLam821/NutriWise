@@ -12,6 +12,22 @@ public class LogEntry {
     private int month;
     private int day;
 
+    public LogEntry(String ingredient, int quantity, String unit, double calories, double carbs, double proteins, double fats) {
+        this.ingredient = ingredient;
+        this.quantity = quantity;
+        this.unit = unit;
+        this.calories = calories;
+        this.carbs = carbs;
+        this.proteins = proteins;
+        this.fats = fats;
+    }
+
+    public LogEntry(int year, int month, int day) {
+        this.year = year;
+        this.month = month;
+        this.day = day;
+    }
+
     public LogEntry(String ingredient, int quantity, String unit, double calories, double carbs, double proteins, double fats, int year, int month, int day) {
         this.ingredient = ingredient;
         this.quantity = quantity;

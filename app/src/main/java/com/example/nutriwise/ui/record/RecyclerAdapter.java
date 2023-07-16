@@ -1,4 +1,4 @@
-package com.example.nutriwise.ui.dashboard;
+package com.example.nutriwise.ui.record;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,21 +11,12 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.nutriwise.R;
 import com.example.nutriwise.model.LogEntry;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.TreeMap;
 
 public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ViewHolder> {
 
-
-//    private TreeMap<String, List<String[]>> logData;
-//    private List<String> dates; // List to store the dates
     private List<LogEntry> logData;
 
-//    public RecyclerAdapter(TreeMap<String, List<String[]>> logData) {
-//        this.logData = logData;
-//        this.dates = new ArrayList<>(logData.keySet()); // Store the dates from the TreeMap
-//    }
     public RecyclerAdapter(List<LogEntry> logData) {
             this.logData = logData;
     }
@@ -56,8 +47,6 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ViewHo
                 "Proteins:", logEntry.getProteins(),
                 "Fats:", logEntry.getFats());
         holder.logDetailTextView.setText(displayDetails);
-
-//        holder.logDetailTextView.setText(logDetailBuilder.toString());
     }
 
     @Override

@@ -3,9 +3,6 @@ package com.example.nutriwise.ui.home;
 import static android.content.ContentValues.TAG;
 
 import android.app.DatePickerDialog;
-import android.content.ContentValues;
-import android.content.Context;
-import android.database.sqlite.SQLiteDatabase;
 import android.icu.util.Calendar;
 import android.os.Bundle;
 import android.util.Log;
@@ -31,7 +28,6 @@ import com.example.nutriwise.model.LogEntry;
 import com.example.nutriwise.model.NutritionData;
 import com.example.nutriwise.model.NutritionDataResponse;
 
-import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.TreeMap;
@@ -45,9 +41,8 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class HomeFragment extends Fragment {
 
     private FragmentHomeBinding binding;
-
     private EditText foodNameEditText;
-    private Button submitButton;
+    private Button searchButton;
     private TextView nutritionTextView;
     private Spinner unitSpinner;
     private EditText unitQtyEditTextNumber;
@@ -61,8 +56,9 @@ public class HomeFragment extends Fragment {
     private int year;
     private int month;
     private int day;
-    static Comparator<String> descendingComparator = Comparator.reverseOrder();
-    private static TreeMap<String, List<String[]>> logData = new TreeMap<>(descendingComparator); // to-be-implemented
+    Button pickDateBtn;
+    Button logBtn;
+    TextView selectedDateTV;
     private Database database;
     LogEntry logEntry;
 
@@ -81,8 +77,7 @@ public class HomeFragment extends Fragment {
         if (mainActivity != null) {
             database = mainActivity.getDatabase();
         }
-        System.out.println("*********");
-        System.out.println(database);
+
 
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(BASE_URL)
@@ -91,12 +86,12 @@ public class HomeFragment extends Fragment {
 
         apiService = retrofit.create(EdamamApiService.class);
         foodNameEditText = root.findViewById(R.id.foodNameEditText);
-        submitButton = root.findViewById(R.id.submitButton);
+        searchButton = root.findViewById(R.id.searchButton);
         nutritionTextView = root.findViewById(R.id.nutritionTextView);
         unitSpinner = root.findViewById(R.id.unitSpinner);
         unitQtyEditTextNumber = root.findViewById(R.id.unitQtyEditTextNumber);
 
-        submitButton.setOnClickListener(new View.OnClickListener() {
+        searchButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 String searchQty = unitQtyEditTextNumber.getText().toString();
@@ -114,95 +109,66 @@ public class HomeFragment extends Fragment {
             }
         }); // end of onClickListener for food search
 
-        // on below line we are initializing our variables.
-        Button pickDateBtn;
-        TextView selectedDateTV;
+
         pickDateBtn = root.findViewById(R.id.idBtnPickDate);
         selectedDateTV = root.findViewById(R.id.idTVSelectedDate);
-
-        // on below line we are adding click listener for our pick date button
         pickDateBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // on below line we are getting
-                // the instance of our calendar.
                 final Calendar c = Calendar.getInstance();
-
-                // on below line we are getting
-                // our day, month and year.
                 year = c.get(Calendar.YEAR);
-                month = c.get(Calendar.MONTH) + 1;
+                month = c.get(Calendar.MONTH);
                 day = c.get(Calendar.DAY_OF_MONTH);
 
-                // on below line we are creating a variable for date picker dialog.
                 DatePickerDialog datePickerDialog = new DatePickerDialog(
-                        // on below line we are passing context.
-                        root.getContext(),
-                        new DatePickerDialog.OnDateSetListener() {
+                        root.getContext(), new DatePickerDialog.OnDateSetListener() {
                             @Override
                             public void onDateSet(DatePicker view, int year,
                                                   int monthOfYear, int dayOfMonth) {
                                 // on below line we are setting date to our text view.
                                 selectedDateTV.setText(dayOfMonth + "-" + (monthOfYear + 1) + "-" + year);
-
                             }
-                        },
-                        // on below line we are passing year,
-                        // month and day for selected date in our date picker.
-                        year, month, day);
-                // at last we are calling show to
-                // display our date picker dialog.
+                        }, year, month, day);
+                // display our date picker dialog
                 datePickerDialog.show();
-            }
-        });
 
-        Button logBtn;
+                if (logEntry == null) {
+                    logEntry = new LogEntry(year, month + 1, day);
+                } else {
+                    logEntry.setYear(year);
+                    logEntry.setMonth(month + 1);
+                    logEntry.setDay(day);
+                }
+            }
+        }); // end of onClickListener for select date
+
+
         logBtn = root.findViewById(R.id.idBtnLog);
         logBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 //                if (dt.isEmpty()) {
-                if (logEntry.equals(null)) {
+                if (logEntry == null || logEntry.getIngredient() == null) {
                     nutritionTextView.setText("Please search for food");
                 } else if (year <= 0) {
                     nutritionTextView.setText("Please select date");
                 } else {
-//                    String dateString = Integer.toString(year) + "-" + Integer.toString(month + 1) + "-" + Integer.toString(day);
-//                    addLogData(dateString, ingredient, dt);
-//                    dt = null;
-//                    ingredient = null;
-//                    year = 0;
-//                    month = 0;
-//                    day = 0;
                     if (database != null) {
                         database.insertFoodEntry(logEntry);
-                    }
-                    else {
-                        System.out.println("DB is null");
+                        nutritionTextView.setText("Data successfully added to your record!");
+                        logEntry = null;
+                        year = 0;
+                        foodNameEditText.setText("");
+                        unitQtyEditTextNumber.setText("");
+                    } else {
+                        nutritionTextView.setText("Internal error, please restart app");
                     }
                 }
             }
-        }); // end of onClickListener for Logging
+        }); // end of onClickListener for logging
 
         return root;
     }
-
-    @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-        binding = null;
-    }
-
-//    public void addLogData(String date, String food, String nutrition) {
-//        if (!logData.containsKey(date)) {
-//            logData.put(date, new ArrayList<>());
-//        }
-//        logData.get(date).add(new String[] {food, nutrition});
-//    }
-//    public static TreeMap<String, List<String[]>> getLogData() {
-//        return logData;
-//    }
-
 
     private void fetchNutritionData(String searchQty, String searchUnit, String searchFood) {
         ingredient = searchQty + searchUnit + " " + searchFood;
@@ -221,8 +187,17 @@ public class HomeFragment extends Fragment {
                     double protein = nutritionData.getProtein().getQuantity();
                     double carbs = nutritionData.getCarbs().getQuantity();
 
-                    // Insert data into db
-                    logEntry = new LogEntry(searchFood, Integer.parseInt(searchQty), searchUnit, calories, carbs, protein, fat, year, month, day);
+                    if (logEntry == null) {
+                        logEntry = new LogEntry(searchFood, Integer.parseInt(searchQty), searchUnit, calories, carbs, protein, fat);
+                    } else {
+                        logEntry.setIngredient(searchFood);
+                        logEntry.setQuantity(Integer.parseInt(searchQty));
+                        logEntry.setUnit(searchUnit);
+                        logEntry.setCalories(calories);
+                        logEntry.setCarbs(carbs);
+                        logEntry.setProteins(protein);
+                        logEntry.setFats(fat);
+                    }
 
                     String displayText = String.format(
                             "%-13s%.1f kcal%n%-14s%.1f g%n%-13s%.1f g%n%-16s%.1f g",
@@ -254,13 +229,10 @@ public class HomeFragment extends Fragment {
         });
     } // end of fetchNutritionData
 
-//    @Override
-//    public void onAttach(@NonNull Context context) {
-//        super.onAttach(context);
-//        MainActivity mainActivity = (MainActivity) context;
-//        database = mainActivity.getDatabase();
-//        System.out.println("*******");
-//        System.out.println("ATTACH");
-//        System.out.println(database);
-//    }
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        binding = null;
+    }
+
 }

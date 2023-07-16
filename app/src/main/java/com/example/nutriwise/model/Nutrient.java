@@ -12,8 +12,6 @@ public class Nutrient {
     @SerializedName("unit")
     private String unit;
 
-    // Add getters and setters for the fields
-
     public String getLabel() {
         return label;
     }

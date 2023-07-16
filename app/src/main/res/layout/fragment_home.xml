@@ -50,7 +50,7 @@
         tools:layout_editor_absoluteY="79dp" />
 
     <Button
-        android:id="@+id/submitButton"
+        android:id="@+id/searchButton"
         android:layout_width="110dp"
         android:layout_height="60dp"
         android:layout_marginStart="80dp"
@@ -105,7 +105,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.503"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/submitButton" />
+        app:layout_constraintTop_toBottomOf="@+id/searchButton" />
 
     <TextView
         android:id="@+id/idTVSelectedDate"

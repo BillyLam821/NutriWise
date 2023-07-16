@@ -1,4 +1,4 @@
-package com.example.nutriwise.ui.dashboard;
+package com.example.nutriwise.ui.record;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -18,11 +18,9 @@ import com.example.nutriwise.R;
 import com.example.nutriwise.databinding.FragmentDashboardBinding;
 import com.example.nutriwise.model.Database;
 import com.example.nutriwise.model.LogEntry;
-import com.example.nutriwise.ui.home.HomeFragment;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.TreeMap;
 
 public class DashboardFragment extends Fragment {
 
@@ -32,7 +30,6 @@ public class DashboardFragment extends Fragment {
     private Button deleteAllBtn;
     RecyclerView.LayoutManager layoutManager;
     private RecyclerAdapter adapter;
-    TreeMap<String, List<String[]>> logData;
     List<LogEntry> logEntries = new ArrayList<>();
     Database database;
     TextView noRecordTxt;
@@ -45,35 +42,22 @@ public class DashboardFragment extends Fragment {
         binding = FragmentDashboardBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
 
-//        final TextView textView = binding.textDashboard;
-//        dashboardViewModel.getText().observe(getViewLifecycleOwner(), textView::setText);
-
-        MainActivity mainActivity = (MainActivity) getActivity();
-//        logData = mainActivity.getLogData();
+        mainActivity = (MainActivity) getActivity();
+        deleteAllBtn = root.findViewById(R.id.deleteAllBtn);
         database = mainActivity.getDatabase();
         logEntries = database.getAllLog();
         if (logEntries.isEmpty()) {
             noRecordTxt = root.findViewById(R.id.noRecordTxt);
             noRecordTxt.setText("No Record Found");
+            deleteAllBtn.setVisibility(View.INVISIBLE);
         }
-//        TextView testView = root.findViewById(R.id.testView);
-//        testView.setText(mainActivity.getLogData().get(0));
-
-        RecyclerView recyclerView = root.findViewById(R.id.recyclerView);
 
         // Set up RecyclerView
-//        recyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
-//        RecyclerAdapter adapter = new RecyclerAdapter(logEntries);
-//        recyclerView.setAdapter(adapter);
-
-
-//        recyclerView = findViewById(R.id.recycler_view);
+        recyclerView = root.findViewById(R.id.recyclerView);
         layoutManager = new LinearLayoutManager(requireContext());
-//        recyclerView.setLayoutManager(layoutManager);
         adapter = new RecyclerAdapter(logEntries);
         recyclerView.setAdapter(adapter);
 
-        deleteAllBtn = root.findViewById(R.id.deleteAllBtn);
         deleteAllBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
